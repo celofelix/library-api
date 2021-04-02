@@ -27,12 +27,17 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Optional<Book> getById(Long id) {
-        Optional<Book> book = repository.findById(id);
-        return book;
+        return repository.findById(id);
     }
 
     @Override
     public void delete(Long id) {
 
+    }
+
+    @Override
+    public Book update(Book book) {
+        Book save = repository.save(book);
+        return save;
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
@@ -46,6 +45,19 @@ public class BookController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         service.delete(book.getId());
+    }
+
+    @PutMapping("{id}")
+    public BookResponse update(@PathVariable Long id, BookResponse response) {
+
+        Book book = service.getById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        book.setTitle(response.getTitle());
+        book.setAuthor(response.getAuthor());
+        book = service.update(book);
+        System.out.println(book);
+        return book.toResponseBook();
     }
 
 }
