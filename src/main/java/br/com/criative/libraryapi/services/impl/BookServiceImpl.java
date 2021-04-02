@@ -6,6 +6,8 @@ import br.com.criative.libraryapi.repositories.BookRepository;
 import br.com.criative.libraryapi.services.BookService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -21,5 +23,11 @@ public class BookServiceImpl implements BookService {
             throw new IsbnException("Isbn já foi cadastrado");
         }
         return repository.save(book);
+    }
+
+    @Override
+    public Optional<Book> getById(Long id) {
+        Optional<Book> book = repository.findById(id);
+        return book;
     }
 }

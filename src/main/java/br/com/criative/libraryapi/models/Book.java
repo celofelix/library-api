@@ -28,6 +28,13 @@ public class Book {
         this.isbn = isbn;
     }
 
+    public Book(Long id, String title, String author, String isbn) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+    }
+
     public BookResponse toResponseBook() {
         return new BookResponse(title, author, isbn);
     }

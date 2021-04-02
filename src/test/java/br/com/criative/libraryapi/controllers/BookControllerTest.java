@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Optional;
+
 /* Anotação para o Spring criar um contexto para rodar os testes.
 O contexto é criado a partir da injeção de depência controlada pelo Spring  */
 @ExtendWith(SpringExtension.class)
@@ -140,6 +142,43 @@ public class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value(mensagem));
 
+    }
+
+    @Test
+    @DisplayName("Deve trazer as informações de um livro")
+    public void getBookDetailsTest() throws Exception {
+
+        Book book = new Book(
+                1L,
+                "Hobbit",
+                "Tolkien",
+                "123123");
+
+        BDDMockito.given(service.getById(book.getId())).willReturn(Optional.of(book));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BOOK_API.concat("/" + book.getId()))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("title").value(book.getTitle()))
+                .andExpect(MockMvcResultMatchers.jsonPath("author").value(book.getAuthor()))
+                .andExpect(MockMvcResultMatchers.jsonPath("isbn").value(book.getIsbn()));
+    }
+
+    @Test
+    @DisplayName("Deve retornar not found quando livro não existir")
+    public void bookBookFoundTest() throws Exception {
+
+        BDDMockito.given(service.getById(Mockito.anyLong())).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BOOK_API.concat("/" + 1))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 

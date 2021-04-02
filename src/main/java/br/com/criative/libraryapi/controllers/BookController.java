@@ -5,6 +5,7 @@ import br.com.criative.libraryapi.responses.BookResponse;
 import br.com.criative.libraryapi.services.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -28,6 +29,13 @@ public class BookController {
         BookResponse responseBook = book.toResponseBook();
         System.out.println(responseBook);
         return responseBook;
+    }
+
+    @GetMapping("{id}")
+    public BookResponse get(@PathVariable Long id) {
+
+        return service.getById(id).map(book -> book.toResponseBook())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
 }
