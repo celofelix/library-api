@@ -217,8 +217,6 @@ public class BookControllerTest {
     @DisplayName("Deve atualizar livro")
     public void updateBookTest() throws Exception {
 
-        Long id = 1L;
-
         Book book = new Book(
                 1L,
                 "Hobbit",
@@ -233,7 +231,7 @@ public class BookControllerTest {
 
         String json = new ObjectMapper().writeValueAsString(book);
 
-        BDDMockito.given(service.getById(id)).willReturn(Optional.of(updatingBook));
+        BDDMockito.given(service.getById(book.getId())).willReturn(Optional.of(updatingBook));
 
         Book updatedBook = new Book(
                 1L,
@@ -244,7 +242,7 @@ public class BookControllerTest {
         BDDMockito.given(service.update(updatingBook)).willReturn(updatedBook);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(BOOK_API.concat("/" + id))
+                .put(BOOK_API.concat("/" + book.getId()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json);

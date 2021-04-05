@@ -35,6 +35,9 @@ public class Book {
         this.isbn = isbn;
     }
 
+    public Book() {
+    }
+
     public BookResponse toResponseBook() {
         return new BookResponse(title, author, isbn);
     }

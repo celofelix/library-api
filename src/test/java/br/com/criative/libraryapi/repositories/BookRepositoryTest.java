@@ -85,10 +85,5 @@ public class BookRepositoryTest {
         Optional<Book> bookFound = bookRepository.findById(book.getId());
 
         Assertions.assertThat(bookFound.isPresent()).isTrue();
-
     }
-
-
-
-
 }

@@ -3,6 +3,7 @@ package br.com.criative.libraryapi.controllers;
 import br.com.criative.libraryapi.models.Book;
 import br.com.criative.libraryapi.responses.BookResponse;
 import br.com.criative.libraryapi.services.BookService;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,7 +42,7 @@ public class BookController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable @NotBlank @Valid Long id) {
         Book book = service.getById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -59,7 +60,6 @@ public class BookController {
         book.setTitle(response.getTitle());
         book.setAuthor(response.getAuthor());
         book = service.update(book);
-        System.out.println(book);
         BookResponse bookResponse = book.toResponseBook();
         System.out.println(bookResponse);
         return bookResponse;
