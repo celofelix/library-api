@@ -9,10 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -39,10 +42,9 @@ public class BookServiceTest {
         Mas para garantir foi feito essa simulação do existsByIsbn retornando false*/
         Mockito.when(repository.existsByIsbn(Mockito.anyString())).thenReturn(false);
 
-        /* Simulando o comportamento de persistência do Repository de um objeto Book
-        Não foi utilizado o BDDMockito devido ser apenas um teste únitário na camada de serviço
-        O BDDMockito foi usado anteriormente devido a estar ligado a aplicação por completo
-        Como se trata apenas de teste unitário pode ser utilizado o Mockito */
+        /* Simulando o comportamento do método save() na classe de serviço
+        Passando o livro criado para ser salvo
+        O retorno deve possuir as mesmas informações do livro criado */
         Mockito.when(repository.save(book))
                 .thenReturn(new Book("Hobbit", "Tolkien", "123123"));
 
@@ -75,8 +77,40 @@ public class BookServiceTest {
                 .hasMessage(mensagem);
 
         Mockito.verify(repository, Mockito.never()).save(book);
+    }
 
+    @Test
+    @DisplayName("Deve obter livro por ID")
+    public void getByIdTest() {
 
+        Book book = new Book(
+                1L,
+                "Hobbit",
+                "Tolkien",
+                "123123");
+
+        Mockito.when(repository.findById(book.getId())).thenReturn(Optional.of(book));
+
+        Optional<Book> bookFound = service.getById(book.getId());
+
+        Assertions.assertThat(bookFound.isPresent()).isTrue();
+        Assertions.assertThat(bookFound.get().getId()).isEqualTo(book.getId());
+        Assertions.assertThat(bookFound.get().getTitle()).isEqualTo(book.getTitle());
+        Assertions.assertThat(bookFound.get().getAuthor()).isEqualTo(book.getAuthor());
+        Assertions.assertThat(bookFound.get().getIsbn()).isEqualTo(book.getIsbn());
+    }
+
+    @Test
+    @DisplayName("Deve retornar vazio caso o ID do Livro não exista")
+    public void bookNotFoundByIdTest() {
+
+        Long id = 1L;
+
+        Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
+
+        Optional<Book> bookFound = service.getById(id);
+
+        Assertions.assertThat(bookFound.isPresent()).isFalse();
     }
 
 }

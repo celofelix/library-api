@@ -23,6 +23,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.CREATED)
     public BookResponse create(@RequestBody @Valid BookResponse response) {
 
+        System.out.println(response);
         Book book = response.toModelBook();
         book = service.save(book);
 
@@ -48,16 +49,20 @@ public class BookController {
     }
 
     @PutMapping("{id}")
-    public BookResponse update(@PathVariable Long id, BookResponse response) {
+    public BookResponse update(@PathVariable Long id, @RequestBody BookResponse response) {
 
+        System.out.println(response);
         Book book = service.getById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
+        System.out.println(book);
         book.setTitle(response.getTitle());
         book.setAuthor(response.getAuthor());
         book = service.update(book);
         System.out.println(book);
-        return book.toResponseBook();
+        BookResponse bookResponse = book.toResponseBook();
+        System.out.println(bookResponse);
+        return bookResponse;
     }
 
 }

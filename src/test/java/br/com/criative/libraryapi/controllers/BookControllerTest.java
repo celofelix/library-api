@@ -145,7 +145,7 @@ public class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Deve trazer as informações de um livro")
+    @DisplayName("Deve trazer as informações de um livro por ID")
     public void getBookDetailsTest() throws Exception {
 
         Book book = new Book(
@@ -168,7 +168,7 @@ public class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Deve retornar not found quando buscar por livro não existir")
+    @DisplayName("Deve retornar not found quando buscar livro por ID não existir")
     public void bookBookFoundTest() throws Exception {
 
         BDDMockito.given(service.getById(Mockito.anyLong())).willReturn(Optional.empty());
