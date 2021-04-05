@@ -66,8 +66,8 @@ public class BookRepositoryTest {
                 "Tolkien",
                 "1234");
 
-        entityManager.persist(book);
-        boolean exists = bookRepository.existsByIsbn(book.getIsbn());
+        bookRepository.save(book);
+        boolean exists = bookRepository.existsByIsbn("123");
         Assertions.assertThat(exists).isFalse();
     }
 
@@ -85,5 +85,37 @@ public class BookRepositoryTest {
         Optional<Book> bookFound = bookRepository.findById(book.getId());
 
         Assertions.assertThat(bookFound.isPresent()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Deve salvar um livro")
+    public void saveBookTeste() {
+
+        Book book = new Book(
+                "Hobbit",
+                "Tolkien",
+                "1234");
+
+        Book savedBook = bookRepository.save(book);
+
+        Assertions.assertThat(savedBook.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Deve excluir um livro")
+    public void deleteBookTest() {
+
+        Book book = new Book(
+                "Hobbit",
+                "Tolkien",
+                "1234");
+
+        Book savedBook = bookRepository.save(book);
+
+        Optional<Book> bookFound = bookRepository.findById(savedBook.getId());
+
+        bookRepository.deleteById(bookFound.get().getId());
+
+        Assertions.assertThat(bookFound).isNotNull();
     }
 }
