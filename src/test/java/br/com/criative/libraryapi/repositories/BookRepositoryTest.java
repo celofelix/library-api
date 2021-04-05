@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 
@@ -55,8 +57,6 @@ public class BookRepositoryTest {
     @DisplayName("Deve retornar false para um isbn não existente no banco")
     public void returnFalseWhenIsbnNotExists() {
 
-        String isbn = "123";
-
         /* Criando objeto para popular a base e ser persistido
         Deve ser sempre criado um objeto no teste unitário
         No escopo de teste a base criado é sempre limpa antes da execução
@@ -67,7 +67,28 @@ public class BookRepositoryTest {
                 "1234");
 
         entityManager.persist(book);
-        boolean exists = bookRepository.existsByIsbn(isbn);
+        boolean exists = bookRepository.existsByIsbn(book.getIsbn());
         Assertions.assertThat(exists).isFalse();
     }
+
+    @Test
+    @DisplayName("Deve obter livro por ID")
+    public void findByIdTest() {
+
+        Book book = new Book(
+                "Hobbit",
+                "Tolkien",
+                "1234");
+
+        entityManager.persist(book);
+
+        Optional<Book> bookFound = bookRepository.findById(book.getId());
+
+        Assertions.assertThat(bookFound.isPresent()).isTrue();
+
+    }
+
+
+
+
 }
