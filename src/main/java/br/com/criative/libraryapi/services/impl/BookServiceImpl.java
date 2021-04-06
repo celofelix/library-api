@@ -4,6 +4,8 @@ import br.com.criative.libraryapi.handler.IsbnException;
 import br.com.criative.libraryapi.models.Book;
 import br.com.criative.libraryapi.repositories.BookRepository;
 import br.com.criative.libraryapi.services.BookService;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -50,6 +52,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<Book> find(Book book, Pageable pages) {
-        return null;
+        Example<Book> example = Example.of(book,
+                ExampleMatcher
+                        .matching()
+                        .withIgnoreCase()
+                        .withIgnoreNullValues()
+                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+
+        return repository.findAll(example, pages);
     }
 }
