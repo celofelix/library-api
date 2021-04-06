@@ -4,11 +4,16 @@ import br.com.criative.libraryapi.models.Book;
 import br.com.criative.libraryapi.responses.BookResponse;
 import br.com.criative.libraryapi.services.BookService;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/books")
@@ -63,6 +68,21 @@ public class BookController {
         BookResponse bookResponse = book.toResponseBook();
         System.out.println(bookResponse);
         return bookResponse;
+    }
+
+    @GetMapping
+    public Page<BookResponse> find(BookResponse response, Pageable page) {
+        Book book = response.toModelBook();
+        Page<Book> bookPage = service.find(book, page);
+
+        List<BookResponse> bookResponses = bookPage.getContent().stream()
+                .map(bookModel -> bookModel.toResponseBook())
+                .collect(Collectors.toList());
+
+        return new PageImpl<BookResponse>(bookResponses,
+                page, bookPage.getTotalElements());
+
+
     }
 
 }

@@ -4,6 +4,8 @@ import br.com.criative.libraryapi.handler.IsbnException;
 import br.com.criative.libraryapi.models.Book;
 import br.com.criative.libraryapi.repositories.BookRepository;
 import br.com.criative.libraryapi.services.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -44,5 +46,10 @@ public class BookServiceImpl implements BookService {
             throw new IllegalArgumentException("Book cant be bull");
         }
         return repository.save(book);
+    }
+
+    @Override
+    public Page<Book> find(Book book, Pageable pages) {
+        return null;
     }
 }
